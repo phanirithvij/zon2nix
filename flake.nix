@@ -42,6 +42,16 @@
             zig_0_13
             zig_0_14
             ;
+
+          zig = zigpkgs.master.overrideAttrs (
+            f: p: {
+              inherit (zig_0_14) meta;
+
+              passthru.hook = callPackage "${inputs.nixpkgs}/pkgs/development/compilers/zig/hook.nix" {
+                zig = f.finalPackage;
+              };
+            }
+          );
         in
         {
           _module.args.pkgs = import inputs.nixpkgs {
@@ -52,17 +62,15 @@
             config = { };
           };
 
+          devShells.default = pkgs.mkShell {
+            packages = [
+              zig
+            ];
+          };
+
           packages = {
             default = callPackage ./nix/package.nix {
-              zig = zigpkgs.master.overrideAttrs (
-                f: p: {
-                  inherit (zig_0_14) meta;
-
-                  passthru.hook = callPackage "${inputs.nixpkgs}/pkgs/development/compilers/zig/hook.nix" {
-                    zig = f.finalPackage;
-                  };
-                }
-              );
+              inherit zig;
             };
             default_0_14 = callPackage ./nix/package.nix {
               zig = zig_0_14;
