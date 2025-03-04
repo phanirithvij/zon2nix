@@ -42,7 +42,6 @@ pub fn fetch(alloc: Allocator, deps: *StringHashMap(Dependency)) !void {
             child.* = ChildProcess.init(argv, alloc);
             child.stdin_behavior = .Ignore;
             child.stdout_behavior = .Pipe;
-            try child.spawn();
             try workers.append(.{ .child = child, .dep = dep });
         }
 
@@ -52,6 +51,7 @@ pub fn fetch(alloc: Allocator, deps: *StringHashMap(Dependency)) !void {
         for (workers.items) |worker| {
             const child = worker.child;
             const dep = worker.dep;
+            try child.spawn();
 
             const buf = try child.stdout.?.readToEndAlloc(alloc, std.math.maxInt(usize));
             defer alloc.free(buf);
