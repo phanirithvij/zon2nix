@@ -58,7 +58,18 @@ pub fn fetch(alloc: Allocator, deps: *StringHashMap(Dependency)) !void {
             defer alloc.free(ref);
 
             log.debug("running \"nix flake prefetch --json --extra-experimental-features 'flakes nix-command' {s}\"", .{ref});
-            const argv = &[_][]const u8{ nix, "flake", "prefetch", "--json", "--extra-experimental-features", "flakes nix-command", ref };
+            const argv = &[_][]const u8{
+                nix,
+                "flake",
+                "prefetch",
+                "--json",
+                "--extra-experimental-features",
+                "flakes nix-command",
+                "--no-use-registries",
+                "--flake-registry",
+                "",
+                ref,
+            };
             child.* = ChildProcess.init(argv, alloc);
             child.stdin_behavior = .Ignore;
             child.stdout_behavior = .Pipe;
