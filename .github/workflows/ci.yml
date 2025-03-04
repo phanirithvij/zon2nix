@@ -28,11 +28,16 @@ jobs:
       - name: Run tests
         run: zig build test
 
-      - name: Run executable on zls
+      - name: Run executable
         run: |
           git clone https://github.com/zigtools/zls
           nix run .#default_0_13 -- zls
+          nix run .#default_0_14 -- zls
           nix run . -- zls
+          git clone https://git.sr.ht/~leon_plickat/wayprompt
+          nix run .#default_0_13 -- wayprompt
+          nix run .#default_0_14 -- wayprompt
+          nix run . -- wayprompt
 
   format:
     name: format
