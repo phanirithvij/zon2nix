@@ -127,7 +127,7 @@ pub fn fetch(alloc: Allocator, deps: *StringHashMap(Dependency)) !void {
             };
             defer file.close();
 
-            try parse(alloc, deps, file);
+            try parse(alloc, deps, file, path);
             if (deps.count() > len_before) {
                 done = false;
             }
@@ -136,3 +136,8 @@ pub fn fetch(alloc: Allocator, deps: *StringHashMap(Dependency)) !void {
         workers.clearRetainingCapacity();
     }
 }
+
+//
+//   TODO test for zls and wayprompt
+//   Both should be in fixtures
+//

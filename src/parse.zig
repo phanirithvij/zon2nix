@@ -8,6 +8,7 @@ const Index = std.zig.Ast.Node.Index;
 const StringHashMap = std.StringHashMap;
 const mem = std.mem;
 const string_literal = std.zig.string_literal;
+const log = std.log;
 
 const Dependency = @import("Dependency.zig");
 
@@ -21,7 +22,8 @@ const zig_legacy_version = (std.SemanticVersion{
     .patch = 0,
 }) == .lt;
 
-pub fn parse(alloc: Allocator, deps: *StringHashMap(Dependency), file: File) !void {
+pub fn parse(alloc: Allocator, deps: *StringHashMap(Dependency), file: File, file_name: []const u8) !void {
+    log.debug("parsing file: {s}", .{file_name});
     const content = try alloc.allocSentinel(u8, try file.getEndPos(), 0);
     defer alloc.free(content);
 
@@ -90,7 +92,9 @@ pub fn parse(alloc: Allocator, deps: *StringHashMap(Dependency), file: File) !vo
 
             if (url != null and hash != null) {
                 dep.url = url.?;
+                std.log.debug("sad {s}: {s}", .{ hash, dep.url });
                 _ = try deps.getOrPutValue(hash.?, dep);
+                std.log.debug("sad {s}: {s}", .{ hash, dep.url });
             } else {
                 return error.parseError;
             }
