@@ -59,7 +59,7 @@ pub fn main() !void {
         deps.deinit();
     }
 
-    try parse(gpa, &deps, file);
+    try parse(gpa, &deps, file, "build.zig.zon");
     try fetch(gpa, &deps);
 
     var out = io.bufferedWriter(io.getStdOut().writer());

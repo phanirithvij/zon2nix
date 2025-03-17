@@ -8,6 +8,7 @@ const Index = std.zig.Ast.Node.Index;
 const StringHashMap = std.StringHashMap;
 const mem = std.mem;
 const string_literal = std.zig.string_literal;
+const log = std.log;
 
 const Dependency = @import("Dependency.zig");
 
@@ -21,7 +22,8 @@ const zig_legacy_version = (std.SemanticVersion{
     .patch = 0,
 }) == .lt;
 
-pub fn parse(alloc: Allocator, deps: *StringHashMap(Dependency), file: File) !void {
+pub fn parse(alloc: Allocator, deps: *StringHashMap(Dependency), file: File, file_name: []const u8) !void {
+    log.debug("parsing file: {s}", .{file_name});
     const content = try alloc.allocSentinel(u8, try file.getEndPos(), 0);
     defer alloc.free(content);
 
@@ -90,7 +92,9 @@ pub fn parse(alloc: Allocator, deps: *StringHashMap(Dependency), file: File) !vo
 
             if (url != null and hash != null) {
                 dep.url = url.?;
+                std.log.debug("sad {s}: {s}", .{ hash.?, dep.url });
                 _ = try deps.getOrPutValue(hash.?, dep);
+                std.log.debug("sad {s}: {s}", .{ hash.?, dep.url });
             } else {
                 return error.parseError;
             }
@@ -119,7 +123,7 @@ test parse {
     var deps = StringHashMap(Dependency).init(alloc);
     const basic = try fs.cwd().openFile("fixtures/basic.zon", .{});
     defer basic.close();
-    try parse(alloc, &deps, basic);
+    try parse(alloc, &deps, basic, "fixtures/basic.zon");
 
     try testing.expectEqual(deps.count(), 6);
     try testing.expectEqualStrings(deps.get("122048992ca58a78318b6eba4f65c692564be5af3b30fbef50cd4abeda981b2e7fa5").?.url, "https://github.com/ziglibs/known-folders/archive/fa75e1bc672952efa0cf06160bbd942b47f6d59b.tar.gz");
