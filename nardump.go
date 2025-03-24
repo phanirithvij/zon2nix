@@ -25,7 +25,6 @@ import (
 	"os"
 	"path"
 	"sort"
-	"time"
 )
 
 var sri = flag.Bool("sri", false, "print SRI")
@@ -131,18 +130,7 @@ func (nw *narWriter) writeRegular(path string) error {
 		nw.str("executable")
 		nw.str("")
 	}
-	timerFn := func(name string) func() {
-		start := time.Now()
-		return func() {
-			fmt.Printf("%s took %v\n", name, time.Since(start))
-		}
-	}
-	defer timerFn("write for " + path)()
-	start := time.Now()
-
 	contents, err := fs.ReadFile(nw.fs, path)
-	fmt.Printf("read took %v, read %d bytes\n", time.Since(start), len(contents))
-	start = time.Now()
 	if err != nil {
 		return err
 	}
@@ -150,7 +138,6 @@ func (nw *narWriter) writeRegular(path string) error {
 	if err := writeBytes(nw.w, contents); err != nil {
 		return err
 	}
-	fmt.Printf("write took %v\n", time.Since(start))
 	nw.str(")")
 	return nil
 }
