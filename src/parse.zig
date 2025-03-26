@@ -73,6 +73,7 @@ pub fn parse(alloc: Allocator, deps: *StringHashMap(Dependency), file: File, fil
 
                 if (mem.eql(u8, name, "url")) {
                     const parsed_url = try parseString(alloc, ast, dep_field_idx);
+                    log.debug("u:{s}, {s}\n", .{ name, parsed_url });
                     if (std.mem.startsWith(u8, parsed_url, "https://")) {
                         url = parsed_url;
                     } else if (std.mem.startsWith(u8, parsed_url, "git+https://")) {
@@ -87,16 +88,17 @@ pub fn parse(alloc: Allocator, deps: *StringHashMap(Dependency), file: File, fil
                     }
                 } else if (mem.eql(u8, name, "hash")) {
                     hash = try parseString(alloc, ast, dep_field_idx);
+                    log.debug("h:{s}, {s}\n", .{ name, hash.? });
                 }
             }
 
             if (url != null and hash != null) {
                 dep.url = url.?;
-                std.log.debug("sad {s}: {s}", .{ hash.?, dep.url });
                 _ = try deps.getOrPutValue(hash.?, dep);
-                std.log.debug("sad {s}: {s}", .{ hash.?, dep.url });
+                log.debug("p:{*}\n", .{&dep});
             } else {
-                return error.parseError;
+                // gracefully ignore .path for now, see nix-community/zon2nix#13
+                // return error.parseError;
             }
         }
     }

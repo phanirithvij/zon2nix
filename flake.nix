@@ -70,13 +70,7 @@
 
           packages = {
             default = callPackage ./nix/package.nix {
-              inherit zig;
-            };
-            default_0_14 = callPackage ./nix/package.nix {
-              zig = zig_0_14;
-            };
-            default_0_13 = callPackage ./nix/package.nix {
-              zig = zig_0_13;
+              zig = zig;
             };
           };
         };

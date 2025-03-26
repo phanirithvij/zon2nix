@@ -1,0 +1,21 @@
+.{
+    .name = .zon2nix,
+    .version = "0.1.3",
+    .dependencies = .{
+        .zig = .{
+            .url = "https://github.com/ziglang/zig/archive/03123916e55a9c0c8b66f748a62b7a4a64203535.tar.gz",
+            .hash = "zig-0.0.0-Fp4XJAKeOAtV1Beb0V7RbMSVXxgQ19_X2qXe6J650kkt",
+        },
+    },
+    .fingerprint = 0xf85edb58ec539529, // Changing this has security and trust implications.
+    .minimum_zig_version = "0.15.0-dev.75+03123916e",
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+        "zigroot",
+        "fixtures",
+        "LICENSE",
+        "README.md",
+    },
+}

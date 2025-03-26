@@ -7,7 +7,7 @@ const io = std.io;
 const process = std.process;
 
 const Dependency = @import("Dependency.zig");
-const fetch = @import("fetch.zig").fetch;
+const fetch = @import("fetch.zig").fetchNix;
 const parse = @import("parse.zig").parse;
 const write = @import("codegen.zig").write;
 
